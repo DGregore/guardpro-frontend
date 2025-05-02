@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';  // Importando o módulo de rotas
 import { AppComponent } from './app.component';
 
 // Importando o módulo de animações necessário para o Angular Material
@@ -31,7 +30,6 @@ import { LoginComponent } from './login/login.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,  // Importando as rotas
     BrowserAnimationsModule,  // Necessário para o Angular Material
     MatButtonModule,          // Módulo de Botões
     MatInputModule,           // Módulo de Inputs

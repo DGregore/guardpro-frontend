@@ -1,0 +1,73 @@
+<!-- guardpro-frontend/src/app/rh/rh-list.component.html -->
+<div class="list-container">
+  <h2>Gerenciamento de Servidores</h2>
+
+  <div class="actions-header">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Filtrar</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Nome, Matrícula..." #input>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="navigateToNovo()">
+      <mat-icon>add</mat-icon> Adicionar Novo Servidor
+    </button>
+  </div>
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div class="mat-elevation-z8 table-container" [hidden]="isLoading || errorMessage">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <!-- Coluna Matrícula -->
+      <ng-container matColumnDef="matricula">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Matrícula </th>
+        <td mat-cell *matCellDef="let row"> {{row.matricula}} </td>
+      </ng-container>
+
+      <!-- Coluna Nome Completo -->
+      <ng-container matColumnDef="nomeCompleto">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome Completo </th>
+        <td mat-cell *matCellDef="let row"> {{row.nomeCompleto}} </td>
+      </ng-container>
+
+      <!-- Coluna Cargo -->
+      <ng-container matColumnDef="cargo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Cargo </th>
+        <td mat-cell *matCellDef="let row"> {{row.cargo}} </td>
+      </ng-container>
+
+      <!-- Coluna Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let row"> {{row.status | replaceUnderscore}} </td>
+      </ng-container>
+
+      <!-- Coluna Ações -->
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef> Ações </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="primary" aria-label="Editar servidor" (click)="editServidor(row.id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" aria-label="Excluir servidor" (click)="deleteServidor(row.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          Nenhum dado encontrado para o filtro "{{input.value}}"
+        </td>
+      </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Selecione a página de servidores"></mat-paginator>
+  </div>
+</div>
+

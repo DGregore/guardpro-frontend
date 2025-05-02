@@ -1,0 +1,75 @@
+/* guardpro-frontend/src/app/rh/rh-list.component.css */
+.rh-list-container {
+  padding: 20px;
+}
+
+.actions-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.loading-indicator,
+.error-message,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  margin-top: 20px;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  text-align: center;
+  color: #666;
+}
+
+.loading-indicator p,
+.error-message p,
+.empty-state p {
+  margin-top: 10px;
+}
+
+.error-message mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 10px;
+}
+
+.error-message button {
+  margin-top: 15px;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  margin-bottom: 10px;
+  color: #aaa;
+}
+
+.table-container {
+  overflow-x: auto; /* Allows horizontal scrolling on smaller screens */
+}
+
+/* Style the table */
+table {
+  width: 100%;
+}
+
+/* Add some spacing for action buttons */
+.mat-column-acoes {
+  width: 120px; /* Adjust as needed */
+  text-align: right;
+}
+
+.mat-column-acoes button {
+  margin-left: 8px;
+}
+
+/* Ensure header text is aligned */
+.mat-header-cell {
+  font-weight: bold;
+}
+

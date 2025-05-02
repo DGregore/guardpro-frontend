@@ -1,0 +1,465 @@
+<!-- guardpro-frontend/src/app/rh/rh-form.component.html -->
+<div class="form-container">
+  <h2>{{ isEditMode ? "Editar Servidor" : "Adicionar Novo Servidor" }}</h2>
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <form [formGroup]="servidorForm" (ngSubmit)="onSubmit()">
+    <mat-stepper linear #stepper>
+
+      <!-- Etapa 1: Dados Pessoais -->
+      <mat-step [stepControl]="getFormGroup('dadosPessoais')" label="Dados Pessoais">
+        <ng-template matStepLabel>Dados Pessoais</ng-template>
+        <div formGroupName="dadosPessoais" class="form-section">
+          <mat-form-field appearance="fill">
+            <mat-label>Nome Completo</mat-label>
+            <input matInput formControlName="nomeCompleto" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+            <mat-error *ngIf="getControl('dadosPessoais', 'nomeCompleto')?.hasError('required')">
+              Nome completo é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Nome Social (Opcional)</mat-label>
+            <input matInput formControlName="nomeSocial">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Data de Nascimento</mat-label>
+            <input matInput type="date" formControlName="dataNascimento" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+            <mat-error *ngIf="getControl('dadosPessoais', 'dataNascimento')?.hasError('required')">
+              Data de nascimento é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Sexo</mat-label>
+            <mat-select formControlName="sexo" required>
+              <mat-option *ngFor="let option of sexoOptions" [value]="option">
+                {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+            <mat-error *ngIf="getControl('dadosPessoais', 'sexo')?.hasError('required')">
+              Sexo é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Estado Civil</mat-label>
+            <mat-select formControlName="estadoCivil" required>
+              <mat-option *ngFor="let option of estadoCivilOptions" [value]="option">
+                 {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+            <mat-error *ngIf="getControl('dadosPessoais', 'estadoCivil')?.hasError('required')">
+              Estado civil é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Nacionalidade</mat-label>
+            <input matInput formControlName="nacionalidade" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosPessoais', 'nacionalidade')?.hasError('required')">
+              Nacionalidade é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>UF de Nascimento</mat-label>
+             <mat-select formControlName="ufNascimento">
+              <mat-option value="">-- Selecione --</mat-option>
+              <mat-option *ngFor="let uf of ufOptions" [value]="uf">{{ uf }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Cidade de Nascimento</mat-label>
+            <input matInput formControlName="cidadeNascimento">
+          </mat-form-field>
+
+           <mat-form-field appearance="fill">
+            <mat-label>Nome da Mãe</mat-label>
+            <input matInput formControlName="nomeMae" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosPessoais', 'nomeMae')?.hasError('required')">
+              Nome da mãe é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Nome do Pai (Opcional)</mat-label>
+            <input matInput formControlName="nomePai">
+          </mat-form-field>
+        </div>
+        <div class="step-actions">
+          <button mat-button matStepperNext type="button">Próximo</button>
+        </div>
+      </mat-step>
+
+      <!-- Etapa 2: Documentos -->
+      <mat-step [stepControl]="getFormGroup('documentos')" label="Documentos">
+        <ng-template matStepLabel>Documentos</ng-template>
+        <div formGroupName="documentos" class="form-section">
+          <mat-form-field appearance="fill">
+            <mat-label>CPF</mat-label>
+            <input matInput formControlName="cpf" placeholder="000.000.000-00" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+            <mat-error *ngIf="getControl('documentos', 'cpf')?.hasError('required')">
+              CPF é obrigatório.
+            </mat-error>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('documentos', 'cpf')?.hasError('pattern')">
+              Formato de CPF inválido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>RG</mat-label>
+            <input matInput formControlName="rgNumero" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('documentos', 'rgNumero')?.hasError('required')">
+              RG é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Órgão Emissor RG</mat-label>
+            <input matInput formControlName="rgOrgaoEmissor" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('documentos', 'rgOrgaoEmissor')?.hasError('required')">
+              Órgão emissor é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Data Emissão RG</mat-label>
+            <input matInput type="date" formControlName="rgDataEmissao" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('documentos', 'rgDataEmissao')?.hasError('required')">
+              Data de emissão do RG é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Título de Eleitor</mat-label>
+            <input matInput formControlName="tituloEleitorNumero">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Zona Eleitoral</mat-label>
+            <input matInput formControlName="tituloEleitorZona">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Seção Eleitoral</mat-label>
+            <input matInput formControlName="tituloEleitorSecao">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>PIS/PASEP</mat-label>
+            <input matInput formControlName="pisPasep">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>CNH</mat-label>
+            <input matInput formControlName="cnhNumero">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Categoria CNH</mat-label>
+             <mat-select formControlName="cnhCategoria">
+               <mat-option value="">-- Selecione --</mat-option>
+              <mat-option *ngFor="let cat of cnhCategorias" [value]="cat">{{ cat }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Validade CNH</mat-label>
+            <input matInput type="date" formControlName="cnhValidade">
+          </mat-form-field>
+        </div>
+        <div class="step-actions">
+          <button mat-button matStepperPrevious type="button">Voltar</button>
+          <button mat-button matStepperNext type="button">Próximo</button>
+        </div>
+      </mat-step>
+
+      <!-- Etapa 3: Dados Funcionais -->
+      <mat-step [stepControl]="getFormGroup('dadosFuncionais')" label="Dados Funcionais">
+        <ng-template matStepLabel>Dados Funcionais</ng-template>
+        <div formGroupName="dadosFuncionais" class="form-section">
+          <mat-form-field appearance="fill">
+            <mat-label>Tipo de Servidor</mat-label>
+            <mat-select formControlName="tipoServidor" required>
+              <mat-option *ngFor="let option of tipoServidorOptions" [value]="option">
+                {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'tipoServidor')?.hasError('required')">
+              Tipo de servidor é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Matrícula</mat-label>
+            <input matInput formControlName="matricula" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'matricula')?.hasError('required')">
+              Matrícula é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Cargo</mat-label>
+            <input matInput formControlName="cargo" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'cargo')?.hasError('required')">
+              Cargo é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Data de Admissão</mat-label>
+            <input matInput type="date" formControlName="dataAdmissao" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'dataAdmissao')?.hasError('required')">
+              Data de admissão é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Regime de Trabalho</mat-label>
+            <mat-select formControlName="regimeTrabalho" required>
+              <mat-option *ngFor="let option of regimeTrabalhoOptions" [value]="option">
+                {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'regimeTrabalho')?.hasError('required')">
+              Regime de trabalho é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Carga Horária Semanal</mat-label>
+            <input matInput type="number" formControlName="cargaHorariaSemanal" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'cargaHorariaSemanal')?.hasError('required')">
+              Carga horária é obrigatória.
+            </mat-error>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'cargaHorariaSemanal')?.hasError('min')">
+              Carga horária deve ser positiva.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Lotação</mat-label>
+            <input matInput formControlName="lotacao" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'lotacao')?.hasError('required')">
+              Lotação é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status" required>
+              <mat-option *ngFor="let option of statusServidorOptions" [value]="option">
+                {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('dadosFuncionais', 'status')?.hasError('required')">
+              Status é obrigatório.
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="step-actions">
+          <button mat-button matStepperPrevious type="button">Voltar</button>
+          <button mat-button matStepperNext type="button">Próximo</button>
+        </div>
+      </mat-step>
+
+      <!-- Etapa 4: Contato -->
+      <mat-step [stepControl]="getFormGroup('contato')" label="Contato">
+        <ng-template matStepLabel>Contato</ng-template>
+        <div formGroupName="contato" class="form-section">
+          <mat-form-field appearance="fill">
+            <mat-label>Email Pessoal</mat-label>
+            <input matInput type="email" formControlName="emailPessoal">
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('contato', 'emailPessoal')?.hasError('email')">
+              Email inválido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Email Institucional</mat-label>
+            <input matInput type="email" formControlName="emailInstitucional" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('contato', 'emailInstitucional')?.hasError('required')">
+              Email institucional é obrigatório.
+            </mat-error>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('contato', 'emailInstitucional')?.hasError('email')">
+              Email inválido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Telefone Celular</mat-label>
+            <input matInput formControlName="telefoneCelular" placeholder="(00) 00000-0000" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('contato', 'telefoneCelular')?.hasError('required')">
+              Telefone celular é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Telefone Residencial</mat-label>
+            <input matInput formControlName="telefoneResidencial" placeholder="(00) 0000-0000">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Telefone para Recado</mat-label>
+            <input matInput formControlName="telefoneRecado" placeholder="(00) 00000-0000">
+          </mat-form-field>
+        </div>
+        <div class="step-actions">
+          <button mat-button matStepperPrevious type="button">Voltar</button>
+          <button mat-button matStepperNext type="button">Próximo</button>
+        </div>
+      </mat-step>
+
+      <!-- Etapa 5: Endereço -->
+      <mat-step [stepControl]="getFormGroup('endereco')" label="Endereço">
+        <ng-template matStepLabel>Endereço</ng-template>
+        <div formGroupName="endereco" class="form-section">
+          <mat-form-field appearance="fill">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="cep" placeholder="00000-000" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'cep')?.hasError('required')">
+              CEP é obrigatório.
+            </mat-error>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'cep')?.hasError('pattern')">
+              Formato de CEP inválido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Logradouro</mat-label>
+            <input matInput formControlName="logradouro" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'logradouro')?.hasError('required')">
+              Logradouro é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Número</mat-label>
+            <input matInput formControlName="numero" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'numero')?.hasError('required')">
+              Número é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complemento">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="bairro" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'bairro')?.hasError('required')">
+              Bairro é obrigatório.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="cidade" required>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'cidade')?.hasError('required')">
+              Cidade é obrigatória.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>UF</mat-label>
+            <mat-select formControlName="uf" required>
+              <mat-option *ngFor="let uf of ufOptions" [value]="uf">{{ uf }}</mat-option>
+            </mat-select>
+            <!-- CORRIGIDO: Usar aspas simples dentro do *ngIf -->
+             <mat-error *ngIf="getControl('endereco', 'uf')?.hasError('required')">
+              UF é obrigatório.
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="step-actions">
+          <button mat-button matStepperPrevious type="button">Voltar</button>
+          <button mat-button matStepperNext type="button">Próximo</button>
+        </div>
+      </mat-step>
+
+      <!-- Etapa 6: Saúde -->
+      <mat-step [stepControl]="getFormGroup('saude')" label="Saúde">
+        <ng-template matStepLabel>Saúde</ng-template>
+        <div formGroupName="saude" class="form-section">
+          <mat-form-field appearance="fill">
+            <mat-label>Tipo Sanguíneo</mat-label>
+            <mat-select formControlName="tipoSanguineo">
+              <mat-option value="">-- Selecione --</mat-option>
+              <mat-option *ngFor="let option of tipoSanguineoOptions" [value]="option">
+                {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Fator RH</mat-label>
+            <mat-select formControlName="fatorRh">
+              <mat-option value="">-- Selecione --</mat-option>
+              <mat-option *ngFor="let option of fatorRhOptions" [value]="option">
+                {{ option | replaceUnderscore }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-checkbox formControlName="possuiDeficiencia">Possui alguma deficiência?</mat-checkbox>
+
+          <mat-form-field appearance="fill" *ngIf="servidorForm.get('saude.possuiDeficiencia')?.value">
+            <mat-label>Tipo de Deficiência</mat-label>
+            <input matInput formControlName="tipoDeficiencia">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" *ngIf="servidorForm.get('saude.possuiDeficiencia')?.value">
+            <mat-label>Observações sobre a Deficiência</mat-label>
+            <textarea matInput formControlName="observacoesDeficiencia"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="step-actions">
+          <button mat-button matStepperPrevious type="button">Voltar</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || servidorForm.invalid">
+            {{ isEditMode ? "Salvar Alterações" : "Adicionar Servidor" }}
+          </button>
+          <button mat-button type="button" (click)="cancel()" [disabled]="isLoading">Cancelar</button>
+        </div>
+      </mat-step>
+
+    </mat-stepper>
+  </form>
+</div>
+
